@@ -4,49 +4,161 @@ namespace Шахматные_фигуры
 {
     class Program
     {
+        //Перевод строки в char,и проверка на существование клетки
+        static void CheckoutAndParce(string place, out char x, out char y, out bool error)
+        {
+            x = Convert.ToChar(place[0]);
+            y = Convert.ToChar(place[1]);
+
+            if (!((x >= 'A' && x <= 'H') && (y >= '1' && y <= '8')))    //Существует ли данная клетка?  
+            {
+                Console.WriteLine("НЕВЕРНЫЙ ВВОД");
+                error = true;
+            }
+            else
+            {
+                error = false;
+            }
+        }
+
+        //пешка
+        static bool Pawn(char fromX, char fromY, char toX, char toY)
+        {
+            Console.WriteLine("Какая пешка? 1.Белая 2.Черная");
+            string pawnWho = Console.ReadLine().ToUpper();
+
+            int movePawnX = Math.Abs(Convert.ToInt32(fromX - toX));
+            int movePawnY = Convert.ToInt32(fromY - toY);
+
+            if (pawnWho == "1" || pawnWho == "БЕЛАЯ")
+            {
+                if (fromY == '2' && (toY == '3' || toY == '4') && fromX == toX)
+                    return true;
+                else if (movePawnY == 1 && fromX == toX)
+                    return true;
+                else if (movePawnY == 1 && movePawnX == 1)
+                    return true;
+                else
+                    return false;
+            }
+            else if (pawnWho == "2" || pawnWho == "ЧЕРНАЯ")
+            {
+                if (fromY == '7' && (toY == '6' || toY == '5') && fromX == toX)
+                    return true;
+                else if (movePawnY == -1 && fromX == toX)
+                    return true;
+                else if (movePawnY == -1 && movePawnX == 1)
+                    return true;
+                else
+                    return false;
+            }
+            else
+            {
+                Console.WriteLine("Неверно введены данные!");
+                return false;
+            }
+        }
+
+        //ладья
+        static bool Rook(char fromX, char fromY, char toX, char toY)
+        {
+            if (((toX >= 'A' || toX <= 'H') && fromY == toY)
+                || ((toY >= '1' || toY <= '8') && fromX == toX))
+                return true;
+            else
+                return false;
+        }
+
+        //конь
+        static bool Knight(char fromX, char fromY, char toX, char toY)
+        {
+            int moveKnightX = Math.Abs(Convert.ToInt32(fromX - toX));
+            int moveKnightY = Math.Abs(Convert.ToInt32(fromY - toY));
+
+            if ((moveKnightX == 1 && moveKnightY == 2)
+                || (moveKnightX == 2 && moveKnightY == 1))
+                return true;
+            else
+                return false;
+        }
+
+        //слон
+        static bool Bishop(char fromX, char fromY, char toX, char toY)
+        {
+            int moveBishopX = Math.Abs(Convert.ToInt32(fromX - toX));
+            int moveBishopY = Math.Abs(Convert.ToInt32(fromY - toY));
+
+            if (moveBishopX == moveBishopY)
+                return true;
+            else
+                return false;
+        }
+
+        //Ферзь
+        static bool Queen(char fromX, char fromY, char toX, char toY)
+        {
+
+            if (Rook(fromX, fromY, toX, toY) || Bishop(fromX, fromY, toX, toY))
+                return true;
+            else
+                return false;
+        }
+
+        //король
+        static bool King(char fromX, char fromY, char toX, char toY)
+        {
+            int moveKingX = Math.Abs(Convert.ToInt32(fromX - toX));
+            int moveKingY = Math.Abs(Convert.ToInt32(fromY - toY));
+
+            if (moveKingY == 1 || moveKingX == 1)
+                return true;
+            else
+                return false;
+        }
+
         static void Main(string[] args)
         {
+            //IsCorrectHors     /
             // 0-48    9-57
             //A-65     H-72
             bool error;
 
             Console.Write("Введите фигуру:");
-            string piece = Console.ReadLine();
-            piece = piece.ToUpper();
+            string piece = Console.ReadLine().ToUpper();
 
             Console.Write("Введите начальное положение фигуры:");
-            string beforPlace = Console.ReadLine();
-            char beforX, beforY;
-            CheckoutAndParce(beforPlace, out beforX, out beforY, out error);
+            string beforPlace = Console.ReadLine().ToUpper();
+            char fromX, fromY;
+            CheckoutAndParce(beforPlace, out fromX, out fromY, out error);
 
             Console.Write("Введите конечное положение фигуры:");
-            string afterPlace = Console.ReadLine();
-            char afterX, afterY;
-            CheckoutAndParce(afterPlace, out afterX, out afterY, out error);
+            string afterPlace = Console.ReadLine().ToUpper();
+            char toX, toY;
+            CheckoutAndParce(afterPlace, out toX, out toY, out error);
 
 
             bool boolP = false;
-            if (error == false)
+            if (!error)
             {
                 switch (piece)
                 {
                     case "ПЕШКА":
-                        boolP = Pawn(beforX, beforY, afterX, afterY);
+                        boolP = Pawn(fromX, fromY, toX, toY);
                         break;
                     case "ЛАДЬЯ":
-                        boolP = Rook(beforX, beforY, afterX, afterY);
+                        boolP = Rook(fromX, fromY, toX, toY);
                         break;
                     case "КОНЬ":
-                        boolP = Knight(beforX, beforY, afterX, afterY);
+                        boolP = Knight(fromX, fromY, toX, toY);
                         break;
                     case "СЛОН":
-                        boolP = Bishop(beforX, beforY, afterX, afterY);
+                        boolP = Bishop(fromX, fromY, toX, toY);
                         break;
                     case "ФЕРЗЬ":
-                        boolP = Queen(beforX, beforY, afterX, afterY);
+                        boolP = Queen(fromX, fromY, toX, toY);
                         break;
                     case "КОРОЛЬ":
-                        boolP = King(beforX, beforY, afterX, afterY);
+                        boolP = King(fromX, fromY, toX, toY);
                         break;
                     default:
                         Console.WriteLine("Непрaвильный ввод фигуры!");
@@ -56,124 +168,8 @@ namespace Шахматные_фигуры
             else
                 Console.WriteLine("Извините,произошла опянка :Р");
 
-            Console.WriteLine("This is " + boolP);
-
-
-
-
-
-
-            //Перевод строки в char,и проверка на существование клетки
-            static void CheckoutAndParce(string place, out char x, out char y, out bool error)
-            {
-                place = place.ToUpper();
-                x = Convert.ToChar(place[0]);
-                y = Convert.ToChar(place[1]);
-
-                if (!((x >= 'A' && x <= 'H') && (y >= '1' && y <= '8')))    //Существует ли данная клетка?  
-                {
-                    Console.WriteLine("НЕВЕРНЫЙ ВВОД");
-                    error = true;
-                }
-                else
-                    error = false;
-            }
-
-            //пешка
-            static bool Pawn(char beforX, char beforY, char afterX, char afterY)
-            {
-                Console.WriteLine("Чья пешка? 1.Моя 2.Врага");
-                string pawnWho = Console.ReadLine().ToUpper();
-
-                int movePawnX = Math.Abs(Convert.ToInt32(beforX - afterX));
-                int movePawnY = Convert.ToInt32(beforY - afterY);
-
-                if (pawnWho == "1" || pawnWho == "МОЯ")
-                {
-                    if (beforY == '2' && (afterY == '3' || afterY == '4') && beforX == afterX)
-                        return true;
-                    else if (movePawnY == 1 && beforX == afterX)
-                        return true;
-                    else if (movePawnY == 1 && movePawnX == 1)
-                        return true;
-                    else
-                        return false;
-                }
-                else if (pawnWho == "2" || pawnWho == "ВРАГА")
-                {
-                    if (beforY == '7' && (afterY == '6' || afterY == '5') && beforX == afterX)
-                        return true;
-                    else if (movePawnY == -1 && beforX == afterX)
-                        return true;
-                    else if (movePawnY == -1 && movePawnX == 1)
-                        return true;
-                    else
-                        return false;
-                }
-                else
-                {
-                    Console.WriteLine("Неверно введены данные!");
-                    return false;
-                }
-            }
-
-            //ладья
-            static bool Rook(char beforX, char beforY, char afterX, char afterY)
-            {
-                if (((afterX >= 'A' || afterX <= 'H') && beforY == afterY)
-                    || ((afterY >= '1' || afterY <= '8') && beforX == afterX))
-                    return true;
-                else
-                    return false;
-            }
-
-            //конь
-            static bool Knight(char beforX, char beforY, char afterX, char afterY)
-            {
-                int moveKnightX = Math.Abs(Convert.ToInt32(beforX - afterX));
-                int moveKnightY = Math.Abs(Convert.ToInt32(beforY - afterY));
-
-                if ((moveKnightX == 1 && moveKnightY == 2)
-                    || (moveKnightX == 2 && moveKnightY == 1))
-                    return true;
-                else
-                    return false;
-            }
-
-            //слон
-            static bool Bishop(char beforX, char beforY, char afterX, char afterY)
-            {
-                int moveBishopX = Math.Abs(Convert.ToInt32(beforX - afterX));
-                int moveBishopY = Math.Abs(Convert.ToInt32(beforY - afterY));
-
-                if (moveBishopX == moveBishopY)
-                    return true;
-                else
-                    return false;
-            }
-
-            //Ферзь
-            static bool Queen(char beforX, char beforY, char afterX, char afterY)
-            {
-
-                if (Rook(beforX, beforY, afterX, afterY) || Bishop(beforX, beforY, afterX, afterY))
-                    return true;
-                else
-                    return false;
-            }
-
-            //король
-            static bool King(char beforX, char beforY, char afterX, char afterY)
-            {
-                int moveKingX = Math.Abs(Convert.ToInt32(beforX - afterX));
-                int moveKingY = Math.Abs(Convert.ToInt32(beforY - afterY));
-
-                if (moveKingY == 1 || moveKingX == 1)
-                    return true;
-                else
-                    return false;
-            }
+            //Вывод
+            Console.WriteLine("This is " + boolP); 
         }
     }
 }
-
